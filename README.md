@@ -1,14 +1,3 @@
-# 🏨 ISA 444: Hotel Demand Forecasting
-**Farmer School of Business | Miami University**
-
-> Comparing traditional, ML, neural, and foundation model approaches for forecasting daily room demand across 17 hotel properties.
-
----
-
-## 📋 Project Overview
-
-This project forecasts **daily room demand** for the next 4 weeks (h = 28) across 17 hotel properties using the `sample_hotels.parquet` dataset. We compare a full suite of forecasting models using rigorous 5-fold time-series cross-validation and report standardized evaluation metrics.
-
 **Team Members:** Bhargava, Harmon, and Munoz  
 **Track:** Option 1 — Hotel Demand Forecasting  
 **Forecast Horizon:** h = 28 days per property
@@ -18,126 +7,111 @@ This project forecasts **daily room demand** for the next 4 weeks (h = 28) acros
 
 For our project, we tested five different ways of prediction hotel room demand to see which one is actually readily applicable for real world data. We compared a plethora of different models, some being math based and others being purely machine-learning based. Our most significant finding was that the TimeCoPilot & LightGBM frameworks were the most accurate out of all of the models we tested. 
 
----
+# Hotel Demand Forecasting
 
-## 📁 Repository Structure
+## Overview
+This project forecasts daily room demand for 17 hotel properties 
+over a 28-day horizon using multiple forecasting approaches from 
+the Nixtlaverse and TimeCopilot packages.
 
-```
-isa444-hotel-forecasting/
-│
-├── notebooks/
-│   └── hotel_forecasting.ipynb       # Full modeling pipeline
-│
-├── data/
-│   └── sample_hotels.parquet         # Source data (17 hotel properties)
-│
-├── outputs/
-│   ├── cv_results.csv                # Cross-validation metrics by series & model
-│   ├── cv_summary_wins.csv           # Win counts per model per metric
-│   ├── test_forecasts.csv            # Final test forecasts for all properties
-│   └── plots/
-│       ├── hotel_01_forecast.png
-│       ├── hotel_02_forecast.png
-│       └── ...                       # One plot per property
-│
-└── README.md
-```
+## Data
+- Dataset: `sample_hotels-1.parquet`
+- 17 hotel properties (hotel_77 and hotel_28 excluded as unreliable)
+- Target: daily room demand (`y`)
+- Forecast horizon: 28 days (4 weeks)
 
----
+## Models Used
+| Package | Models |
+|---------|--------|
+| StatsForecast | Naive, SeasonalNaive, AutoETS, AutoARIMA (with and without predictors) |
+| MLForecast | LightGBM (LGBM), Random Forest (RF) |
+| NeuralForecast | NBEATS, NHITS |
+| TimeCopilot | Chronos, Moirai, TimesFM-2.5 |
 
-## 🤖 Models Compared
+## Evaluation Method
+- 5-fold time series cross-validation (h=28, step_size=28)
+- Metrics: ME (bias), MAE, RMSE, MAPE
+- Final test on held-out last 28 days
 
-| Category | Model |
-|---|---|
-| **Baseline** | Naive, Seasonal Naive |
-| **Statistical** | AutoETS, AutoARIMA (StatsForecast) |
-| **ML** | LightGBM (MLForecast) |
-| **Neural** | AutoNBEATS, AutoNHITS (NeuralForecast) |
-| **Foundation** | Chronos (TimeCoPilot) |
+## Results
 
----
+### StatsForecast
+**Best model: AutoARIMA_WithPred**
+| Metric | AutoARIMA_WithPred | AutoARIMA_NoPred | AutoETS | SeasonalNaive | Naive |
+|--------|-------------------|-----------------|---------|---------------|-------|
+| MAE wins | 12 | 2 | 0 | 1 | 2 |
+| RMSE wins | 12 | 2 | 2 | 0 | 1 |
+| MAPE wins | 13 | 1 | 0 | 2 | 1 |
+| Bias wins | 4 | 4 | 6 | 2 | 1 |
 
-## 📊 Evaluation Methodology
-
-- **Cross-validation:** 5-fold time-series CV (non-overlapping windows)
-- **Metrics reported per series and per model:**
-  - ME (Mean Error — bias)
-  - MAE (Mean Absolute Error)
-  - RMSE (Root Mean Squared Error)
-  - MAPE (Mean Absolute Percentage Error, where applicable)
-- **Win counting:** A model "wins" on a series if it achieves the lowest value for a given metric on that series.
-
-> ⚠️ **MAPE Note:** MAPE is excluded for series with near-zero demand values to avoid division instability. MAE and RMSE are the primary metrics for those properties.
+- AutoARIMA_WithPred dominated accuracy metrics across almost all hotels
+- Adding otb_28 booking data and hotel type dummies made a significant difference
+- AutoETS was the least biased model with 6/17 wins on ME
 
 ---
 
-## 📈 Key Results
+### MLForecast
+**Best model: LGBM**
+| Metric | LGBM | RF |
+|--------|------|----|
+| MAE wins | 12 | 5 |
+| RMSE wins | 11 | 6 |
+| MAPE wins | 11 | 6 |
+| Bias wins | 7 | 10 |
 
-### Cross-Validation Summary (CV MAE — lower is better)
-
-| Model | Avg MAE | Avg RMSE | Wins (MAE) |
-|---|---|---|---|
-| Naive | — | — | — |
-| Seasonal Naive | — | — | — |
-| AutoETS | — | — | — |
-| AutoARIMA | — | — | — |
-| LightGBM | — | — | — |
-| AutoNBEATS | — | — | — |
-| AutoNHITS | — | — | — |
-| Chronos | — | — | — |
-
-*Fill in after running the notebook.*
-
-### Findings
-
-- **Best overall model:** [Model name] — consistently lowest MAE across the majority of properties.
-- **Seasonal patterns:** Seasonal Naive performs well on properties with strong weekly seasonality, outperforming more complex models on [N] series.
-- **Foundation model:** Chronos achieved competitive accuracy without any training, particularly on [describe pattern].
-- **Where ML excels:** LightGBM benefited from longer training histories and performed best on [describe].
+- LGBM was the stronger model on accuracy metrics winning 12/17 on MAE
+- RF was less biased overall with 10/17 bias wins
+- Both models used otb_28 booking data and hotel type dummies as predictors
 
 ---
 
-## 🗺️ Forecast Plots
+### NeuralForecast
+**Best model: NBEATS**
+| Metric | NBEATS | NHITS |
+|--------|--------|-------|
+| MAE wins | 10 | 7 |
+| RMSE wins | 10 | 7 |
+| MAPE wins | 9 | 8 |
+| Bias wins | 6 | 11 |
 
-Below are sample forecast plots (actuals vs. predicted) for selected properties. Full plots for all 17 hotels are in [`outputs/plots/`](outputs/plots/).
-
-| Property | Plot |
-|---|---|
-| Hotel 01 | ![Hotel 01](outputs/plots/hotel_01_forecast.png) |
-| Hotel 02 | ![Hotel 02](outputs/plots/hotel_02_forecast.png) |
-
----
-
-## ▶️ Reproducing This Project
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/[your-username]/isa444-hotel-forecasting.git
-cd isa444-hotel-forecasting
-```
-
-### 2. Install dependencies
-```bash
-pip install statsforecast mlforecast neuralforecast utilsforecast pandas pyarrow matplotlib
-pip install git+https://github.com/time-series-foundation-models/timecopi lot  # or per TimeCoPilot docs
-```
-
-### 3. Run the notebook
-Open `notebooks/hotel_forecasting.ipynb` in Jupyter, JupyterLab, or [DeepNote](https://deepnote.com) and run all cells top to bottom.
-
-All outputs (CSVs and plots) will be saved automatically to the `outputs/` folder.
+- NBEATS edged out NHITS on accuracy metrics
+- NHITS was less biased with 11/17 bias wins
+- Both models used input_size=56 and horizon=28
 
 ---
 
-## 📦 Dependencies
+### TimeCopilot
+**Best model: TimesFM-2.5**
+| Metric | TimesFM-2.5 | Chronos | Moirai |
+|--------|-------------|---------|--------|
+| MAE wins | 11 | 6 | 0 |
+| RMSE wins | 9 | 7 | 1 |
+| MAPE wins | 11 | 5 | 1 |
+| Bias wins | 5 | 7 | 5 |
 
-```
-statsforecast
-mlforecast
-neuralforecast
-utilsforecast
-pandas
-pyarrow
-matplotlib
-lightgbm
-```
+- TimesFM-2.5 dominated accuracy metrics across most hotels
+- Chronos was the least biased model with 7/17 bias wins
+- Moirai struggled overall, rarely competitive on any metric
+
+---
+
+## Key Findings
+1. **AutoARIMA_WithPred** was the strongest statistical model — adding 
+   on-the-books booking data (otb_28) and hotel characteristics as 
+   predictors made a significant difference over all baseline models
+2. **LGBM** outperformed Random Forest on accuracy metrics but RF 
+   showed less bias overall
+3. **NBEATS** was the stronger neural model on accuracy while NHITS 
+   showed less bias
+4. **TimesFM-2.5** was the strongest foundation model by a wide margin, 
+   winning most hotels on MAE and MAPE
+5. Hotels like hotel_7, hotel_35, hotel_42, and hotel_98 were harder 
+   to forecast across ALL models, likely due to volatile or irregular 
+   occupancy patterns
+6. MAPE was unreliable for high-variance hotels — MAE and RMSE were 
+   used as primary metrics for those series
+
+## Outputs
+- 📁 [Evaluation CSVs](outputs/)
+- 📓 [Notebooks](notebooks/)
+- 📊 [Forecast Plots](plots/)
