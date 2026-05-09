@@ -14,7 +14,7 @@ This project forecasts **daily room demand** for the next 4 weeks (h = 28) acros
 **Forecast Horizon:** h = 28 days per property
 
 
-** Executive Summary **
+## Executive Summary 
 
 For our project, we tested five different ways of prediction hotel room demand to see which one is actually readily applicable for real world data. We compared a plethora of different models, some being math based and others being purely machine-learning based. Our most significant finding was that the TimeCoPilot & LightGBM frameworks were the most accurate out of all of the models we tested. 
 
