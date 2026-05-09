@@ -111,6 +111,51 @@ the Nixtlaverse and TimeCopilot packages.
 6. MAPE was unreliable for high-variance hotels — MAE and RMSE were 
    used as primary metrics for those series
 
+## Summary of Findings
+
+This project compared 12 forecasting models across four packages to predict 
+daily room demand for 17 hotel properties over a 28-day horizon.
+
+### Best Models by Package
+- **StatsForecast**: AutoARIMA_WithPred was the clear winner, dominating with 
+  12/17 wins on MAE and 13/17 on MAPE. The key driver was the inclusion of 
+  on-the-books booking data (otb_28) and hotel type dummies as predictors. 
+  Without these predictors, AutoARIMA performed significantly worse, highlighting 
+  how much forward booking information matters for hotel demand forecasting.
+
+- **MLForecast**: LGBM outperformed Random Forest on accuracy metrics, winning 
+  12/17 hotels on MAE, 11/17 on RMSE and MAPE. RF was less biased overall 
+  with 10/17 bias wins but fell behind on raw accuracy.
+
+- **NeuralForecast**: NBEATS was the stronger model winning 10/17 hotels on 
+  both MAE and RMSE. NHITS was less biased with 11/17 bias wins but could 
+  not match NBEATS on accuracy.
+
+- **TimeCopilot**: TimesFM-2.5 dominated with 11/17 wins on both MAE and MAPE 
+  and 9/17 on RMSE. Chronos was the least biased with 7/17 ME wins. Moirai 
+  struggled across all metrics and was rarely competitive.
+
+### Overall Winner
+AutoARIMA_WithPred was the strongest model overall, consistently outperforming 
+all other models across accuracy metrics. This suggests that for hotel demand 
+forecasting, traditional statistical models with strong domain-specific predictors 
+can outperform more complex neural and foundation models.
+
+### Performance Variation by Series
+Model performance varied noticeably across hotels. Hotels like hotel_126, 
+hotel_21, and hotel_133 were easy to forecast with low errors across all models, 
+likely reflecting stable and predictable occupancy patterns. In contrast, 
+hotel_7, hotel_35, hotel_42, and hotel_98 showed consistently high errors 
+across all models, suggesting more volatile or irregular occupancy that is 
+difficult to capture regardless of model complexity.
+
+### Note on MAPE
+MAPE was included for all series but should be interpreted cautiously for 
+hotel_7, hotel_35, hotel_42, and hotel_98, which showed consistently high 
+MAPE values across all models. This likely reflects periods of near-zero 
+occupancy in these hotels, which inflates MAPE since it divides by the actual 
+value. For these series, MAE and RMSE were used as the primary accuracy metrics.
+
 ## Forecast Plots
 
 ### Best Model Comparison (one per package)
