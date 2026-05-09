@@ -5,7 +5,7 @@
 
 ## Executive Summary 
 
-For our project, we tested five different ways of prediction hotel room demand to see which one is actually readily applicable for real world data. We compared a plethora of different models, some being math based and others being purely machine-learning based. Our most significant finding was that the TimeCoPilot & LightGBM frameworks were the most accurate out of all of the models we tested. 
+For our project, we tested five different ways of predicting hotel room demand to see which one is actually readily applicable for real-world data. We compared a plethora of different models, some being math-based and others being purely machine-learning-based. Our most significant finding was that the TimeCoPilot & LightGBM frameworks were the most accurate out of all of the models we tested. 
 
 # Hotel Demand Forecasting
 
@@ -114,4 +114,4 @@ the Nixtlaverse and TimeCopilot packages.
 ## Outputs
 - 📁 [Evaluation CSVs](outputs/)
 - 📓 [Notebooks](notebooks/)
-- 📊 [Forecast Plots](plots/)
+- 📊 [Forecast Plots](outputs/plots/)
