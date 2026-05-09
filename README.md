@@ -111,6 +111,14 @@ the Nixtlaverse and TimeCopilot packages.
 6. MAPE was unreliable for high-variance hotels — MAE and RMSE were 
    used as primary metrics for those series
 
+## Forecast Plots
+
+### Best Model Comparison (one per package)
+Shows AutoARIMA_WithPred, LGBM, NBEATS, and TimesFM-2.5 vs actual demand for each hotel.
+
+### Full Model Comparison (all models)
+Shows all 12 models vs actual demand for each hotel.
+
 ## Outputs
 - 📁 [Evaluation CSVs](outputs/)
 - 📓 [Notebooks](notebooks/)
