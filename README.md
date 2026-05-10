@@ -5,7 +5,7 @@
 
 ## Executive Summary 
 
-For our project, we tested five different ways of predicting hotel room demand to see which one is actually readily applicable for real-world data. We compared a plethora of different models, some being math-based and others being purely machine-learning-based. Our most significant finding was that the TimeCoPilot & LightGBM frameworks were the most accurate out of all of the models we tested. 
+For our project, we tested five different ways of predicting hotel room demand to see which one is actually readily applicable for real-world data. We compared a plethora of different models, some being math-based and others being purely machine-learning-based. Our most significant finding was that AutoARIMA with on-the-books booking predictors was the strongest model overall, outperforming all 11 other models across accuracy metrics. This highlights that traditional statistical models with strong domain-specific predictors can outperform more complex neural and foundation models for hotel demand forecasting. 
 
 # Hotel Demand Forecasting
 
